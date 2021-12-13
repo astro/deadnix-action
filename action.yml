@@ -20,7 +20,11 @@ runs:
       id: deadnix
     - run: |
         if ! git diff --quiet --exit-code ; then
-          git commit -a -m "${{ inputs.commit_message }}\n\n${{ steps.deadnix.outputs.msg }}"
+          git commit -a -F - <<EOF
+          ${{ inputs.commit_message }}
+
+          ${{ steps.deadnix.outputs.msg }}
+        EOF
         fi
       env:
         GIT_AUTHOR_NAME: github-actions[bot]
