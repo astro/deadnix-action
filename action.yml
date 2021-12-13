@@ -1,0 +1,33 @@
+name: 'deadnix'
+description: 'Find unused Nix code, and create a pull request'
+inputs:
+  flags:
+    description: 'Command-line flags to deadnix'
+    required: false
+    default: '--no-lambda-pattern-names'
+runs:
+  using: "composite"
+  steps:
+    - name: Nix dead code analysis
+      run: |
+        nix run github:astro/deadnix -- ${{ inputs.flags }}
+      shell: bash
+    - run: |
+        git commit -m "${{ inputs.commit_message }}"
+      env:
+        GIT_AUTHOR_NAME: github-actions[bot]
+        GIT_AUTHOR_EMAIL: <github-actions[bot]@users.noreply.github.com>
+        GIT_COMMITTER_NAME: github-actions[bot]
+        GIT_COMMITTER_EMAIL: <github-actions[bot]@users.noreply.github.com>
+      shell: bash
+    - name: Create PR
+      uses: peter-evans/create-pull-request@v3
+      with:
+        branch: deadnix
+        delete-branch: true
+        title: "Remove dead Nix code"
+        body: |
+          Automated changes by the [deadnix-action](https://github.com/astro/deadnix-action) GitHub Action.
+branding:
+    icon: 'git-pull-request'
+    color: 'red'
