@@ -10,7 +10,7 @@ runs:
   steps:
     - name: Nix dead code analysis
       run: |
-        nix run github:astro/deadnix -- ${{ inputs.flags }}
+        nix run github:astro/deadnix -- ${{ inputs.flags }} .
       shell: bash
     - run: |
         git commit -m "${{ inputs.commit_message }}"
