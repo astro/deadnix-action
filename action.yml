@@ -14,11 +14,13 @@ runs:
   steps:
     - name: Nix dead code analysis
       run: |
+        echo -n "::set-output name=msg::"
         nix run github:astro/deadnix -- ${{ inputs.flags }} -e .
       shell: bash
+      id: deadnix
     - run: |
         if ! git diff --quiet --exit-code ; then
-          git commit -a -m "${{ inputs.commit_message }}"
+          git commit -a -m "${{ inputs.commit_message }}\n\n${{ steps.deadnix.outputs.msg }}"
         fi
       env:
         GIT_AUTHOR_NAME: github-actions[bot]
@@ -31,9 +33,13 @@ runs:
       with:
         branch: deadnix
         delete-branch: true
-        title: "Remove dead Nix code"
+        title: "${{ inputs.commit_message }}"
         body: |
           Automated changes by the [deadnix-action](https://github.com/astro/deadnix-action) GitHub Action.
+          
+          ```
+          ${{ steps.deadnix.outputs.msg }}
+          ```
 branding:
     icon: 'git-pull-request'
     color: 'red'
