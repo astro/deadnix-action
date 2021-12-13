@@ -5,6 +5,10 @@ inputs:
     description: 'Command-line flags to deadnix'
     required: false
     default: '--no-lambda-pattern-names'
+  commit_message:
+    description: 'Commit message'
+    required: false
+    default: 'Remove dead code'
 runs:
   using: "composite"
   steps:
