@@ -24,6 +24,6 @@ jobs:
             name: deadnix
           - uses:
             astro/deadnix-action@main
-```on: [push]
+```
 
 `git add`, `git commit`, `git push`, be happy.
