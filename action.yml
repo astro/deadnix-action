@@ -14,8 +14,9 @@ runs:
   steps:
     - name: Nix dead code analysis
       run: |
-        DEADNIX=$(nix build --no-link github:astro/deadnix)
-        MSG="$($DEADNIX/bin/deadnix ${{ inputs.flags }} -e .)"
+        TMP=$(mktemp -d)
+        nix build -o $TMP/deadnix github:astro/deadnix
+        MSG="$($TMP/deadnix/bin/deadnix ${{ inputs.flags }} -e .)"
         MSG="${MSG//'%'/'%25'}"
         MSG="${MSG//$'\n'/'%0A'}"
         MSG="${MSG//$'\r'/'%0D'}"
