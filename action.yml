@@ -14,8 +14,12 @@ runs:
   steps:
     - name: Nix dead code analysis
       run: |
-        echo -n "::set-output name=msg::"
-        nix run github:astro/deadnix -- ${{ inputs.flags }} -e .
+        DEADNIX=$(nix build --no-link github:astro/deadnix)
+        MSG="$($DEADNIX/bin/deadnix ${{ inputs.flags }} -e .)"
+        MSG="${MSG//'%'/'%25'}"
+        MSG="${MSG//$'\n'/'%0A'}"
+        MSG="${MSG//$'\r'/'%0D'}"
+        echo -n "::set-output name=msg::$MSG"
       shell: bash
       id: deadnix
     - run: |
@@ -45,5 +49,5 @@ runs:
           ${{ steps.deadnix.outputs.msg }}
           ```
 branding:
-    icon: 'git-pull-request'
+    icon: 'minus-circle'
     color: 'red'
