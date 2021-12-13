@@ -17,7 +17,7 @@ runs:
         nix run github:astro/deadnix -- ${{ inputs.flags }} -e .
       shell: bash
     - run: |
-        if git diff --quiet --exit-code ; then
+        if ! git diff --quiet --exit-code ; then
           git commit -a -m "${{ inputs.commit_message }}"
         fi
       env:
