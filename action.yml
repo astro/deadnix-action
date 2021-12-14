@@ -1,4 +1,4 @@
-name: 'deadnix'
+name: 'deadnix-action'
 description: 'Find unused Nix code, and create a pull request'
 inputs:
   flags:
