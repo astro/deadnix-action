@@ -21,7 +21,7 @@ jobs:
           - uses: cachix/install-nix-action@v16
           - uses: cachix/cachix-action@v10
             with:
-            name: deadnix
+              name: deadnix
           - uses: astro/deadnix-action@main
 ```
 
