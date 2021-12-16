@@ -22,8 +22,7 @@ jobs:
           - uses: cachix/cachix-action@v10
             with:
             name: deadnix
-          - uses:
-            astro/deadnix-action@main
+          - uses: astro/deadnix-action@main
 ```
 
 `git add`, `git commit`, `git push`, be happy.
