@@ -27,8 +27,6 @@ runs:
         if ! git diff --quiet --exit-code ; then
           git commit -a -F - <<EOF
           ${{ inputs.commit_message }}
-
-          ${{ steps.deadnix.outputs.msg }}
         EOF
         fi
       env:
@@ -45,10 +43,6 @@ runs:
         title: "${{ inputs.commit_message }}"
         body: |
           Automated changes by the [deadnix-action](https://github.com/astro/deadnix-action) GitHub Action.
-          
-          ```
-          ${{ steps.deadnix.outputs.msg }}
-          ```
 branding:
     icon: 'minus-circle'
     color: 'red'
