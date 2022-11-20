@@ -4,7 +4,15 @@ inputs:
   flags:
     description: 'Command-line flags to deadnix'
     required: false
-    default: '--no-lambda-pattern-names'
+    default: '--edit'
+  directory:
+    description: 'Command-line flags to deadnix'
+    required: false
+    default: '.'
+  create_pr:
+    description: 'Whether to create a PR'
+    required: false
+    default: 'true'
   commit_message:
     description: 'Commit message'
     required: false
@@ -13,34 +21,17 @@ runs:
   using: "composite"
   steps:
     - name: Nix dead code analysis
-      run: |
-        TMP=$(mktemp -d)
-        nix build -o $TMP/deadnix github:astro/deadnix
-        MSG="$($TMP/deadnix/bin/deadnix ${{ inputs.flags }} -e .)"
-        MSG="${MSG//'%'/'%25'}"
-        MSG="${MSG//$'\n'/'%0A'}"
-        MSG="${MSG//$'\r'/'%0D'}"
-        echo -n "::set-output name=msg::$MSG"
+      run: 'nix run nixpkgs#deadnix -- ${{ inputs.flags }} ${{ inputs.directory }}'
       shell: bash
       id: deadnix
-    - run: |
-        if ! git diff --quiet --exit-code ; then
-          git commit -a -F - <<EOF
-          ${{ inputs.commit_message }}
-        EOF
-        fi
-      env:
-        GIT_AUTHOR_NAME: github-actions[bot]
-        GIT_AUTHOR_EMAIL: <github-actions[bot]@users.noreply.github.com>
-        GIT_COMMITTER_NAME: github-actions[bot]
-        GIT_COMMITTER_EMAIL: <github-actions[bot]@users.noreply.github.com>
-      shell: bash
     - name: Create PR
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v4
+      if: inputs.create_pr == 'true'
       with:
         branch: deadnix
         delete-branch: true
         title: "${{ inputs.commit_message }}"
+        commit-message: "${{ inputs.commit_message }}"
         body: |
           Automated changes by the [deadnix-action](https://github.com/astro/deadnix-action) GitHub Action.
 branding:
