@@ -5,6 +5,17 @@ inputs:
     description: 'Command-line flags to deadnix'
     required: false
     default: '--edit'
+  author:
+    description: >
+      The author name and email address in the format `Display Name <email@address.com>`.
+      Defaults to the user who triggered the workflow run.
+    required: false
+    default: '${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>'
+  committer:
+    description: >
+      The committer name and email address in the format `Display Name <email@address.com>`.
+      Defaults to the GitHub Actions bot user.
+    default: 'GitHub <noreply@github.com>'
   directory:
     description: 'Command-line flags to deadnix'
     required: false
@@ -18,7 +29,7 @@ inputs:
     required: false
     default: 'Remove dead code'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Nix dead code analysis
       run: 'nix run nixpkgs#deadnix -- ${{ inputs.flags }} ${{ inputs.directory }}'
@@ -28,12 +39,14 @@ runs:
       uses: peter-evans/create-pull-request@v4
       if: inputs.create_pr == 'true'
       with:
+        author: '${{ inputs.author }}'
         branch: deadnix
         delete-branch: true
-        title: "${{ inputs.commit_message }}"
-        commit-message: "${{ inputs.commit_message }}"
+        title: '${{ inputs.commit_message }}'
+        commit-message: '${{ inputs.commit_message }}'
+        committer: '${{ inputs.committer }}'
         body: |
           Automated changes by the [deadnix-action](https://github.com/astro/deadnix-action) GitHub Action.
 branding:
-    icon: 'minus-circle'
-    color: 'red'
+  icon: 'minus-circle'
+  color: 'red'
