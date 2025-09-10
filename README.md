@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v25
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/install-nix-action@v30
+      - uses: cachix/cachix-action@v15
         with:
           name: deadnix
       - uses: astro/deadnix-action@main
